@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Lock, User } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdminLogin = () => {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -19,17 +20,40 @@ export const AdminLogin = () => {
     setIsLoading(true);
     setError("");
 
-    // Simple authentication - In production, this should be handled by a proper backend
-    if (credentials.username === "admin" && credentials.password === "pehraavini2024") {
-      localStorage.setItem("isAdminAuthenticated", "true");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: credentials.email,
+        password: credentials.password,
+      });
+
+      if (error) {
+        setError(error.message);
+        toast.error("Login failed");
+        return;
+      }
+
+      // Check if user is admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (profile?.role !== 'admin') {
+        setError("Access denied. Admin privileges required.");
+        toast.error("Access denied");
+        await supabase.auth.signOut();
+        return;
+      }
+
       toast.success("Login successful!");
       navigate("/admin/dashboard");
-    } else {
-      setError("Invalid username or password");
-      toast.error("Invalid credentials");
+    } catch (err) {
+      setError("An unexpected error occurred");
+      toast.error("Login failed");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -56,15 +80,15 @@ export const AdminLogin = () => {
             )}
             
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder="Enter username"
-                  value={credentials.username}
-                  onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
+                  id="email"
+                  type="email"
+                  placeholder="Enter admin email"
+                  value={credentials.email}
+                  onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                   className="pl-10"
                   required
                 />
@@ -98,9 +122,9 @@ export const AdminLogin = () => {
           </form>
           
           <div className="mt-6 p-4 bg-muted rounded-lg">
-            <h4 className="font-semibold text-sm mb-2">Demo Credentials:</h4>
-            <p className="text-xs text-muted-foreground">Username: admin</p>
-            <p className="text-xs text-muted-foreground">Password: pehraavini2024</p>
+            <h4 className="font-semibold text-sm mb-2">Admin Access:</h4>
+            <p className="text-xs text-muted-foreground">Only admin users can access this panel</p>
+            <p className="text-xs text-muted-foreground">Contact site owner for admin credentials</p>
           </div>
         </CardContent>
       </Card>

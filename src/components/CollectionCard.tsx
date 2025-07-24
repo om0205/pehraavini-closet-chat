@@ -96,25 +96,27 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
           </div>
         </CardContent>
 
-        <CardFooter className="p-6 pt-0 space-y-3">
-          <Button
-            variant="elegant"
-            className="w-full"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            View Details
-          </Button>
-          
-          <Button
-            variant="whatsapp"
-            className="w-full"
-            onClick={handleWhatsAppInquiry}
-            disabled={!isAvailable}
-          >
-            <MessageCircle className="h-4 w-4 mr-2" />
-            {isAvailable ? "Enquire on WhatsApp" : "Currently Unavailable"}
-          </Button>
+        <CardFooter className="p-6 pt-0">
+          <div className="flex flex-col gap-3 w-full">
+            <Button
+              variant="elegant"
+              className="w-full"
+              onClick={() => setIsModalOpen(true)}
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              View Details
+            </Button>
+            
+            <Button
+              variant="whatsapp"
+              className="w-full"
+              onClick={handleWhatsAppInquiry}
+              disabled={!isAvailable}
+            >
+              <MessageCircle className="h-4 w-4 mr-2" />
+              {isAvailable ? "Enquire on WhatsApp" : "Currently Unavailable"}
+            </Button>
+          </div>
         </CardFooter>
       </Card>
 

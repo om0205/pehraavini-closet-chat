@@ -21,7 +21,7 @@ export const HeroSection = () => {
             <img 
               src="/lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png" 
               alt="Pehraavini" 
-              className="h-24 w-auto mx-auto mb-4"
+              className="h-32 md:h-40 w-auto mx-auto mb-4"
             />
           </div>
           
