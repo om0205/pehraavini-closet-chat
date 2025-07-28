@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Mail, Phone } from "lucide-react";
+import { Heart, MessageCircle, Mail, Phone, Instagram } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -41,6 +41,17 @@ export const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg text-foreground">Get in Touch</h3>
             <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <Instagram className="h-5 w-5 text-primary" />
+                <a 
+                  href="https://www.instagram.com/pehraavini?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
+                  @pehraavini
+                </a>
+              </div>
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-5 w-5 text-primary" />
                 <a 
