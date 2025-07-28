@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, X, Plus } from "lucide-react";
 import { Collection } from "@/components/CollectionCard";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AddCollectionModalProps {
   isOpen: boolean;
@@ -24,7 +25,8 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
     category: "",
     status: "Available" as "Available" | "Sold Out"
   });
-  const [images, setImages] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,15 +34,19 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
     if (!files) return;
 
     Array.from(files).forEach(file => {
-      if (images.length >= 5) {
+      if (imageFiles.length >= 5) {
         toast.error("Maximum 5 images allowed");
         return;
       }
 
+      // Add file to state
+      setImageFiles(prev => [...prev, file]);
+      
+      // Create preview
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          setImages(prev => [...prev, event.target!.result as string]);
+          setImagePreviews(prev => [...prev, event.target!.result as string]);
         }
       };
       reader.readAsDataURL(file);
@@ -48,7 +54,29 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
   };
 
   const removeImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadImagesToStorage = async (files: File[]): Promise<string[]> => {
+    const uploadPromises = files.map(async (file, index) => {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${index}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('clothing-images')
+        .upload(fileName, file);
+
+      if (error) throw error;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('clothing-images')
+        .getPublicUrl(fileName);
+        
+      return publicUrl;
+    });
+
+    return Promise.all(uploadPromises);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,16 +89,19 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
         return;
       }
 
-      if (images.length === 0) {
+      if (imageFiles.length === 0) {
         toast.error("Please upload at least one image");
         return;
       }
+
+      // Upload images to storage and get URLs
+      const imageUrls = await uploadImagesToStorage(imageFiles);
 
       const collection: Omit<Collection, "id"> = {
         name: formData.name,
         price: parseInt(formData.price),
         description: formData.description,
-        images,
+        images: imageUrls,
         status: formData.status,
         category: formData.category || undefined
       };
@@ -85,9 +116,11 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
         category: "",
         status: "Available"
       });
-      setImages([]);
+      setImageFiles([]);
+      setImagePreviews([]);
       onClose();
     } catch (error) {
+      console.error('Error adding collection:', error);
       toast.error("Failed to add collection");
     } finally {
       setIsSubmitting(false);
@@ -102,7 +135,8 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
       category: "",
       status: "Available"
     });
-    setImages([]);
+    setImageFiles([]);
+    setImagePreviews([]);
   };
 
   return (
@@ -213,23 +247,23 @@ export const AddCollectionModal = ({ isOpen, onClose, onAdd }: AddCollectionModa
                 onChange={handleImageUpload}
                 className="hidden"
                 id="image-upload"
-                disabled={images.length >= 5}
+                disabled={imageFiles.length >= 5}
               />
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => document.getElementById('image-upload')?.click()}
-                disabled={images.length >= 5}
+                disabled={imageFiles.length >= 5}
               >
                 <Plus className="h-4 w-4 mr-2" />
-                {images.length === 0 ? "Upload Images" : `Add More (${images.length}/5)`}
+                {imageFiles.length === 0 ? "Upload Images" : `Add More (${imageFiles.length}/5)`}
               </Button>
             </div>
 
             {/* Image Preview */}
-            {images.length > 0 && (
+            {imagePreviews.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {images.map((image, index) => (
+                {imagePreviews.map((image, index) => (
                   <div key={index} className="relative group">
                     <div className="aspect-[3/4] bg-muted rounded-lg overflow-hidden">
                       <img
