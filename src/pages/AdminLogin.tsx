@@ -72,6 +72,16 @@ export const AdminLogin = () => {
         </CardHeader>
         
         <CardContent>
+          <div className="mb-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate("/")}
+              className="w-full"
+            >
+              ← Back to Homepage
+            </Button>
+          </div>
+          
           <form onSubmit={handleLogin} className="space-y-4">
             {error && (
               <Alert variant="destructive">

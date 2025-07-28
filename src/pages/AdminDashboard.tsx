@@ -8,63 +8,140 @@ import { Plus, LogOut, Eye, Edit, Trash2, Package, TrendingUp, Users, MessageCir
 import { Collection } from "@/components/CollectionCard";
 import { AddCollectionModal } from "@/components/admin/AddCollectionModal";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+
+const fetchCollections = async (): Promise<Collection[]> => {
+  const { data, error } = await supabase
+    .from('clothing_sets')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) throw error;
+  
+  return data.map(item => ({
+    id: item.id,
+    name: item.name,
+    price: Number(item.price),
+    description: item.description || '',
+    images: item.images || [],
+    status: item.status === 'available' ? 'Available' : 'Sold Out',
+    category: item.category
+  }));
+};
 
 export const AdminDashboard = () => {
-  const [collections, setCollections] = useState<Collection[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: collections = [], isLoading, error } = useQuery({
+    queryKey: ['admin-collections'],
+    queryFn: fetchCollections,
+  });
 
   useEffect(() => {
     // Check authentication
-    const isAuthenticated = localStorage.getItem("isAdminAuthenticated");
-    if (!isAuthenticated) {
-      navigate("/admin");
-      return;
-    }
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/admin");
+        return;
+      }
 
-    // Load collections from localStorage (in production, this would be from your database)
-    const savedCollections = localStorage.getItem("pehraavini_collections");
-    if (savedCollections) {
-      setCollections(JSON.parse(savedCollections));
-    }
+      // Check if user is admin
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+
+      if (profile?.role !== 'admin') {
+        navigate("/admin");
+        return;
+      }
+    };
+
+    checkAuth();
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isAdminAuthenticated");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     toast.success("Logged out successfully");
     navigate("/admin");
   };
 
-  const handleAddCollection = (newCollection: Omit<Collection, "id">) => {
-    const collection: Collection = {
-      ...newCollection,
-      id: Date.now().toString()
-    };
-    
-    const updatedCollections = [...collections, collection];
-    setCollections(updatedCollections);
-    localStorage.setItem("pehraavini_collections", JSON.stringify(updatedCollections));
-    toast.success("Collection added successfully!");
-  };
+  const handleAddCollection = async (newCollection: Omit<Collection, "id">) => {
+    try {
+      const { error } = await supabase
+        .from('clothing_sets')
+        .insert({
+          name: newCollection.name,
+          price: newCollection.price,
+          description: newCollection.description,
+          images: newCollection.images,
+          category: newCollection.category,
+          status: newCollection.status === 'Available' ? 'available' : 'sold_out'
+        });
 
-  const handleDeleteCollection = (id: string) => {
-    if (confirm("Are you sure you want to delete this collection?")) {
-      const updatedCollections = collections.filter(c => c.id !== id);
-      setCollections(updatedCollections);
-      localStorage.setItem("pehraavini_collections", JSON.stringify(updatedCollections));
-      toast.success("Collection deleted successfully!");
+      if (error) throw error;
+
+      // Refresh the collections
+      queryClient.invalidateQueries({ queryKey: ['admin-collections'] });
+      queryClient.invalidateQueries({ queryKey: ['collections'] });
+      
+      toast.success("Collection added successfully!");
+    } catch (error) {
+      console.error('Error adding collection:', error);
+      toast.error("Failed to add collection");
     }
   };
 
-  const toggleStatus = (id: string) => {
-    const updatedCollections = collections.map(c => 
-      c.id === id 
-        ? { ...c, status: (c.status === "Available" ? "Sold Out" : "Available") as "Available" | "Sold Out" }
-        : c
-    );
-    setCollections(updatedCollections);
-    localStorage.setItem("pehraavini_collections", JSON.stringify(updatedCollections));
-    toast.success("Status updated successfully!");
+  const handleDeleteCollection = async (id: string) => {
+    if (confirm("Are you sure you want to delete this collection?")) {
+      try {
+        const { error } = await supabase
+          .from('clothing_sets')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        // Refresh the collections
+        queryClient.invalidateQueries({ queryKey: ['admin-collections'] });
+        queryClient.invalidateQueries({ queryKey: ['collections'] });
+        
+        toast.success("Collection deleted successfully!");
+      } catch (error) {
+        console.error('Error deleting collection:', error);
+        toast.error("Failed to delete collection");
+      }
+    }
+  };
+
+  const toggleStatus = async (id: string) => {
+    try {
+      const collection = collections.find(c => c.id === id);
+      if (!collection) return;
+
+      const newStatus = collection.status === "Available" ? "sold_out" : "available";
+      
+      const { error } = await supabase
+        .from('clothing_sets')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      // Refresh the collections
+      queryClient.invalidateQueries({ queryKey: ['admin-collections'] });
+      queryClient.invalidateQueries({ queryKey: ['collections'] });
+      
+      toast.success("Status updated successfully!");
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast.error("Failed to update status");
+    }
   };
 
   const availableCount = collections.filter(c => c.status === "Available").length;
@@ -156,7 +233,23 @@ export const AdminDashboard = () => {
             </Button>
           </div>
 
-          {collections.length === 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-card rounded-lg p-4 animate-pulse">
+                  <div className="aspect-[3/4] bg-muted rounded-md mb-4"></div>
+                  <div className="h-4 bg-muted rounded mb-2"></div>
+                  <div className="h-4 bg-muted rounded w-3/4"></div>
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <Alert variant="destructive">
+              <AlertDescription>
+                Failed to load collections. Please try again later.
+              </AlertDescription>
+            </Alert>
+          ) : collections.length === 0 ? (
             <Alert>
               <AlertDescription>
                 No collections found. Add your first collection to get started!
