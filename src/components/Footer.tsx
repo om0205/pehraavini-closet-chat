@@ -76,7 +76,7 @@ export const Footer = () => {
                 <Phone className="h-5 w-5 text-primary" />
                 <div className="text-muted-foreground">
                   <div>+91 988 120 7898</div>
-                  <div>+91 XXX XXX XXXX</div>
+                  <div>+91 739 781 2069</div>
                 </div>
               </div>
             </div>
