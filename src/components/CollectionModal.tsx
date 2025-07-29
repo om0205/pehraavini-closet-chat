@@ -147,7 +147,6 @@ export const CollectionModal = ({ collection, isOpen, onClose, onWhatsAppInquiry
                 <li>• Premium quality fabric</li>
                 <li>• Intricate embroidery work</li>
                 <li>• Perfect for special occasions</li>
-                <li>• Available for custom fitting</li>
               </ul>
             </div>
 
