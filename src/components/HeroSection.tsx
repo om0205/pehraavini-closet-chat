@@ -59,7 +59,7 @@ export const HeroSection = () => {
             <Button 
               variant="outline" 
               size="xl"
-              onClick={() => window.open('https://wa.me/your-number', '_blank')}
+              onClick={() => window.open('https://wa.me/919881207898', '_blank')}
               className="min-w-[200px] border-primary text-primary hover:bg-primary hover:text-primary-foreground"
             >
               Contact Us

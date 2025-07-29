@@ -25,7 +25,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
 
   const handleWhatsAppInquiry = () => {
     const message = `Hi! I'm interested in the "${collection.name}" ghagra choli priced at ₹${collection.price.toLocaleString()}. Could you please provide more details?`;
-    const whatsappUrl = `https://wa.me/your-number?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/919881207898?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 

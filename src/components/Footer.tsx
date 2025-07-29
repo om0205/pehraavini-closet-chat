@@ -55,7 +55,7 @@ export const Footer = () => {
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-5 w-5 text-primary" />
                 <a 
-                  href="https://wa.me/your-number" 
+                  href="https://wa.me/919881207898" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-primary transition-colors"
@@ -66,10 +66,10 @@ export const Footer = () => {
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-primary" />
                 <a 
-                  href="mailto:info@pehraavini.com" 
+                  href="mailto:pehraavini.store@gmail.com" 
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  info@pehraavini.com
+                  pehraavini.store@gmail.com
                 </a>
               </div>
               <div className="flex items-center space-x-3">

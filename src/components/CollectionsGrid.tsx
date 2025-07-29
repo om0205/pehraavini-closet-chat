@@ -74,17 +74,6 @@ export const CollectionsGrid = () => {
           </div>
         )}
 
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-4">
-            Looking for something specific? We also create custom designs!
-          </p>
-          <button
-            onClick={() => window.open('https://wa.me/your-number?text=Hi! I would like to inquire about custom ghagra choli designs.', '_blank')}
-            className="inline-flex items-center px-6 py-3 border border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-colors rounded-md font-medium"
-          >
-            Contact for Custom Designs
-          </button>
-        </div>
       </div>
     </section>
   );
