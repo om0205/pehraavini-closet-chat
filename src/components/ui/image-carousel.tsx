@@ -35,7 +35,11 @@ export const ImageCarousel = ({ images, name, className = "" }: ImageCarouselPro
       <img
         src={images[currentIndex]}
         alt={`${name} - Image ${currentIndex + 1}`}
-        className="w-full h-full object-cover transition-all duration-500"
+        className="w-full h-full object-cover transition-all duration-500 transform"
+        style={{
+          transform: `translateX(${currentIndex * -100}%)`,
+          animation: 'slideIn 0.5s ease-in-out'
+        }}
       />
 
       {images.length > 1 && (

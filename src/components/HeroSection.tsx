@@ -17,7 +17,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-cream to-background overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center bg-cream overflow-hidden">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 animate-pulse">
@@ -41,7 +41,7 @@ export const HeroSection = () => {
             <img 
               src={`${import.meta.env.BASE_URL}lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png`}
               alt="Pehraavini Logo" 
-              className="h-24 w-auto drop-shadow-lg"
+              className="h-32 w-auto drop-shadow-lg"
             />
           </div>
 
@@ -102,16 +102,6 @@ export const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Trust Indicators */}
-          <div className="mt-16 text-center">
-            <p className="text-muted-foreground mb-4">Trusted by brides across India</p>
-            <div className="flex justify-center items-center gap-2">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-5 w-5 fill-gold text-gold" />
-              ))}
-              <span className="ml-2 text-muted-foreground">4.9/5 from 200+ happy customers</span>
-            </div>
-          </div>
         </div>
       </div>
 
