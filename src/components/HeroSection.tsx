@@ -1,72 +1,122 @@
+
 import { Button } from "@/components/ui/button";
+import { MessageCircle, Sparkles, Heart, Star } from "lucide-react";
 
 export const HeroSection = () => {
   const scrollToCollections = () => {
-    document.getElementById('collections')?.scrollIntoView({ behavior: 'smooth' });
+    const collectionsSection = document.getElementById('collections');
+    if (collectionsSection) {
+      collectionsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleWhatsAppContact = () => {
+    const message = "Hi! I'm interested in your ghagra choli collections. Could you please help me?";
+    const whatsappUrl = `https://wa.me/919881207898?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
   };
 
   return (
-    <section className="relative min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-cream via-background to-secondary overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-cream to-background overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-20 left-20 w-32 h-32 border border-primary rounded-full"></div>
-        <div className="absolute bottom-20 right-20 w-24 h-24 border border-accent rounded-full"></div>
-        <div className="absolute top-1/2 left-10 w-16 h-16 border border-gold rounded-full"></div>
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 animate-pulse">
+          <Sparkles className="h-8 w-8 text-primary/20" />
+        </div>
+        <div className="absolute top-40 right-20 animate-bounce delay-1000">
+          <Heart className="h-6 w-6 text-accent/30" />
+        </div>
+        <div className="absolute bottom-32 left-20 animate-pulse delay-500">
+          <Star className="h-7 w-7 text-gold/30" />
+        </div>
+        <div className="absolute bottom-20 right-32 animate-bounce delay-700">
+          <Sparkles className="h-5 w-5 text-primary/25" />
+        </div>
       </div>
-      
-      <div className="container px-4 text-center relative z-10">
-        <div className="max-w-4xl mx-auto">
+
+      <div className="container px-4 z-10">
+        <div className="text-center max-w-4xl mx-auto">
           {/* Logo */}
-          <div className="mb-8">
+          <div className="mb-8 flex justify-center">
             <img 
-              src="/lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png" 
-              alt="Pehraavini" 
-              className="h-32 md:h-40 w-auto mx-auto mb-4"
+              src={`${import.meta.env.BASE_URL}lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png`}
+              alt="Pehraavini Logo" 
+              className="h-24 w-auto drop-shadow-lg"
             />
           </div>
-          
+
           {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 leading-tight">
-            Exquisite 
-            <span className="bg-gradient-primary bg-clip-text text-transparent"> Ghagra Cholis</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">
+              Pehraavini
+            </span>
             <br />
-            for Every Celebration
+            <span className="text-foreground text-4xl md:text-5xl">
+              Exquisite Ghagra Cholis
+            </span>
           </h1>
-          
-          {/* Tagline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 font-medium">
-            Where attire becomes an emotion!
+
+          {/* Subtitle */}
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            Discover the perfect blend of tradition and elegance with our handcrafted collection of 
+            <span className="text-primary font-semibold"> premium ghagra cholis</span>, 
+            designed to make every moment unforgettable.
           </p>
-          
-          {/* Description */}
-          <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Discover our stunning collection of traditional ghagra cholis, 
-            perfect for weddings, festivals, and special occasions. Each piece 
-            is crafted with love and attention to detail.
-          </p>
-          
+
+          {/* Features */}
+          <div className="flex flex-wrap justify-center gap-6 mb-12 text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-gold" />
+              <span>Premium Quality</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-accent" />
+              <span>Handcrafted Designs</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <span>Exclusive Collections</span>
+            </div>
+          </div>
+
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               variant="elegant" 
-              size="xl" 
+              size="lg" 
+              className="text-lg px-8 py-3 shadow-elegant"
               onClick={scrollToCollections}
-              className="min-w-[200px]"
             >
+              <Sparkles className="h-5 w-5 mr-2" />
               Explore Collections
             </Button>
             
             <Button 
-              variant="outline" 
-              size="xl"
-              onClick={() => window.open('https://wa.me/919881207898', '_blank')}
-              className="min-w-[200px] border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              variant="whatsapp" 
+              size="lg" 
+              className="text-lg px-8 py-3"
+              onClick={handleWhatsAppContact}
             >
-              Contact Us
+              <MessageCircle className="h-5 w-5 mr-2" />
+              WhatsApp Us
             </Button>
+          </div>
+
+          {/* Trust Indicators */}
+          <div className="mt-16 text-center">
+            <p className="text-muted-foreground mb-4">Trusted by brides across India</p>
+            <div className="flex justify-center items-center gap-2">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-5 w-5 fill-gold text-gold" />
+              ))}
+              <span className="ml-2 text-muted-foreground">4.9/5 from 200+ happy customers</span>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
     </section>
   );
 };

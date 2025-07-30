@@ -124,7 +124,7 @@ export const AdminDashboard = () => {
       const collection = collections.find(c => c.id === id);
       if (!collection) return;
 
-      const newStatus = collection.status === "Available" ? "sold out" : "available";
+      const newStatus = collection.status === "Available" ? "sold_out" : "available";
       
       const { error } = await supabase
         .from('clothing_sets')
@@ -155,7 +155,7 @@ export const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <img 
-                src="/lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png" 
+                src={`${import.meta.env.BASE_URL}lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png`}
                 alt="Pehraavini" 
                 className="h-10 w-auto"
               />

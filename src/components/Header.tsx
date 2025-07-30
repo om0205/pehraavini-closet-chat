@@ -1,47 +1,54 @@
-import { ShoppingBag, User, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
+
+  const scrollToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-      <div className="container flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+      <div className="container px-4 h-16 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
           <img 
-            src="/lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png" 
-            alt="Pehraavini Logo" 
-            className="h-12 w-auto"
+            src={`${import.meta.env.BASE_URL}lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png`}
+            alt="Pehraavini" 
+            className="h-10 w-auto"
           />
+          <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            Pehraavini
+          </span>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <a href="#collections" className="text-foreground hover:text-primary transition-colors">
-            Collections
-          </a>
-          <a href="#about" className="text-foreground hover:text-primary transition-colors">
-            About
-          </a>
-          <a href="#contact" className="text-foreground hover:text-primary transition-colors">
-            Contact
-          </a>
-        </nav>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => navigate("/admin")}
+          <button 
+            onClick={() => scrollToSection('hero')}
+            className="text-foreground hover:text-primary transition-colors"
           >
-            <User className="h-5 w-5" />
-          </Button>
-        </div>
+            Home
+          </button>
+          <button 
+            onClick={() => scrollToSection('collections')}
+            className="text-foreground hover:text-primary transition-colors"
+          >
+            Collections
+          </button>
+          <button 
+            onClick={() => scrollToSection('contact')}
+            className="text-foreground hover:text-primary transition-colors"
+          >
+            Contact
+          </button>
+        </nav>
 
         {/* Mobile Menu Button */}
         <Button
@@ -50,34 +57,35 @@ export const Header = () => {
           className="md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          <Menu className="h-5 w-5" />
+          {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
-      </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t">
-          <nav className="flex flex-col space-y-4 p-4">
-            <a href="#collections" className="text-foreground hover:text-primary transition-colors">
-              Collections
-            </a>
-            <a href="#about" className="text-foreground hover:text-primary transition-colors">
-              About
-            </a>
-            <a href="#contact" className="text-foreground hover:text-primary transition-colors">
-              Contact
-            </a>
-            <Button 
-              variant="outline" 
-              className="w-full justify-start"
-              onClick={() => navigate("/admin")}
-            >
-              <User className="h-5 w-5 mr-2" />
-              Admin Panel
-            </Button>
-          </nav>
-        </div>
-      )}
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="absolute top-16 left-0 right-0 bg-background border-b border-border md:hidden">
+            <nav className="container px-4 py-4 flex flex-col space-y-4">
+              <button 
+                onClick={() => scrollToSection('hero')}
+                className="text-foreground hover:text-primary transition-colors text-left"
+              >
+                Home
+              </button>
+              <button 
+                onClick={() => scrollToSection('collections')}
+                className="text-foreground hover:text-primary transition-colors text-left"
+              >
+                Collections
+              </button>
+              <button 
+                onClick={() => scrollToSection('contact')}
+                className="text-foreground hover:text-primary transition-colors text-left"
+              >
+                Contact
+              </button>
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   );
 };

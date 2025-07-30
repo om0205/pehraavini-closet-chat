@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Eye } from "lucide-react";
 import { CollectionModal } from "./CollectionModal";
+import { ImageCarousel } from "./ui/image-carousel";
 
 export interface Collection {
   id: string;
@@ -21,7 +23,6 @@ interface CollectionCardProps {
 
 export const CollectionCard = ({ collection }: CollectionCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const handleWhatsAppInquiry = () => {
     const message = `Hi! I'm interested in the "${collection.name}" ghagra choli priced at ₹${collection.price.toLocaleString()}. Could you please provide more details?`;
@@ -35,24 +36,18 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
     <>
       <Card className="group overflow-hidden bg-card hover:shadow-card transition-all duration-300 border-border hover:border-primary/30">
         <CardHeader className="p-0 relative overflow-hidden">
-          {/* Image Container */}
-          <div className="relative aspect-[3/4] bg-muted">
-            {!isImageLoaded && (
-              <div className="absolute inset-0 bg-gradient-to-br from-muted via-muted/50 to-muted animate-pulse" />
-            )}
-            <img
-              src={collection.images[0] || "/api/placeholder/300/400"}
-              alt={collection.name}
-              className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-                isImageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              onLoad={() => setIsImageLoaded(true)}
+          {/* Image Carousel Container */}
+          <div className="relative">
+            <ImageCarousel 
+              images={collection.images} 
+              name={collection.name}
+              className="transition-transform duration-500 group-hover:scale-110"
             />
             
             {/* Status Badge */}
             <Badge 
               variant={isAvailable ? "default" : "destructive"}
-              className={`absolute top-4 right-4 ${
+              className={`absolute top-4 right-4 z-10 ${
                 isAvailable 
                   ? "bg-green-600 hover:bg-green-700" 
                   : "bg-red-600 hover:bg-red-700"
@@ -63,7 +58,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
 
             {/* Sold Out Overlay */}
             {!isAvailable && (
-              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
                 <span className="text-white text-xl font-bold">SOLD OUT</span>
               </div>
             )}
@@ -72,7 +67,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
             <Button
               variant="secondary"
               size="icon"
-              className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg"
+              className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg z-10"
               onClick={() => setIsModalOpen(true)}
             >
               <Eye className="h-4 w-4" />
