@@ -81,7 +81,7 @@ export const AdminDashboard = () => {
           description: newCollection.description,
           images: newCollection.images,
           category: newCollection.category,
-          status: newCollection.status === 'Available' ? 'available' : 'sold_out'
+          status: newCollection.status === 'Available' ? 'available' : 'sold-out'
         });
 
       if (error) throw error;
@@ -131,7 +131,7 @@ export const AdminDashboard = () => {
         return;
       }
 
-      const newStatus = collection.status === "Available" ? "sold" : "available";
+      const newStatus = collection.status === "Available" ? "sold-out" : "available";
       
       const { error } = await supabase
         .from('clothing_sets')
