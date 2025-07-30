@@ -124,6 +124,13 @@ export const AdminDashboard = () => {
       const collection = collections.find(c => c.id === id);
       if (!collection) return;
 
+      // Check if user is authenticated and has admin role
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please log in as admin");
+        return;
+      }
+
       const newStatus = collection.status === "Available" ? "sold_out" : "available";
       
       const { error } = await supabase
@@ -131,7 +138,11 @@ export const AdminDashboard = () => {
         .update({ status: newStatus })
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        toast.error(`Failed to update status: ${error.message}`);
+        return;
+      }
 
       // Refresh the collections
       queryClient.invalidateQueries({ queryKey: ['admin-collections'] });
