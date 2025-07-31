@@ -11,6 +11,9 @@ export const Footer = () => {
               src="/lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png" 
               alt="Pehraavini" 
               className="h-16 w-auto"
+              onError={(e) => {
+                e.currentTarget.src = "/placeholder.svg";
+              }}
             />
             <p className="text-muted-foreground leading-relaxed">
               Where attire becomes an emotion! Crafting beautiful ghagra cholis 

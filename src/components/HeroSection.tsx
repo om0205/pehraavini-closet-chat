@@ -52,7 +52,7 @@ export const HeroSection = () => {
             </span>
             <br />
             <span className="text-foreground text-4xl md:text-5xl">
-              Exquisite Ghagra Cholis
+              Where attire becomes an emotion!
             </span>
           </h1>
 
