@@ -70,7 +70,7 @@ export const ImageCarousel = ({ images, name, className = "" }: ImageCarouselPro
       <img
         src={validImages[currentIndex]}
         alt={`${name} - Image ${currentIndex + 1}`}
-        className="w-full h-full object-cover transition-all duration-300 transform"
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         loading="lazy"
         decoding="async"
         onError={(e) => {

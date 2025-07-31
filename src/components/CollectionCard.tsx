@@ -41,7 +41,6 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
             <ImageCarousel 
               images={collection.images} 
               name={collection.name}
-              className="transition-transform duration-500 group-hover:scale-110"
             />
             
             {/* Status Badge */}
