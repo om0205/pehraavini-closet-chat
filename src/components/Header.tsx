@@ -43,7 +43,7 @@ export const Header = () => {
             Collections
           </button>
           <button 
-            onClick={() => scrollToSection('contact')}
+            onClick={() => scrollToSection('footer')}
             className="text-foreground hover:text-primary transition-colors"
           >
             Contact
@@ -77,7 +77,7 @@ export const Header = () => {
                 Collections
               </button>
               <button 
-                onClick={() => scrollToSection('contact')}
+                onClick={() => scrollToSection('footer')}
                 className="text-foreground hover:text-primary transition-colors text-left"
               >
                 Contact

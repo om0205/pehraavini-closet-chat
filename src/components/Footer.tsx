@@ -2,7 +2,7 @@ import { Heart, MessageCircle, Mail, Phone, Instagram } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-secondary border-t">
+    <footer id="footer" className="bg-secondary border-t">
       <div className="container px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand Section */}
@@ -87,10 +87,8 @@ export const Footer = () => {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center">
-          <p className="text-muted-foreground flex items-center justify-center space-x-1">
-            <span>Made with</span>
-            <Heart className="h-4 w-4 text-red-500 fill-current" />
-            <span>by Pehraavini • © 2024 All rights reserved</span>
+          <p className="text-muted-foreground">
+            Pehraavini • © 2025 All rights reserved
           </p>
         </div>
       </div>
