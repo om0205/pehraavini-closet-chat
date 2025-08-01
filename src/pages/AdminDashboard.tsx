@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, LogOut, Eye, Edit, Trash2, Package, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { Collection } from "@/components/CollectionCard";
 import { AddCollectionModal } from "@/components/admin/AddCollectionModal";
+import { InvitationManagement } from "@/components/admin/InvitationManagement";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -233,6 +234,9 @@ export const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Admin Invitations */}
+        <InvitationManagement />
 
         {/* Collections Management */}
         <div className="space-y-6">
