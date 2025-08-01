@@ -72,17 +72,21 @@ export const ImageCarousel = ({ images, name, className = "" }: ImageCarouselPro
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {validImages.map((image, index) => (
-          <img
+          <div
             key={index}
-            src={image}
-            alt={`${name} - Image ${index + 1}`}
-            className="w-full h-full object-cover flex-shrink-0 transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              e.currentTarget.src = "/api/placeholder/300/400";
-            }}
-          />
+            className="w-full h-full flex-shrink-0 overflow-hidden"
+          >
+            <img
+              src={image}
+              alt={`${name} - Image ${index + 1}`}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              loading="lazy"
+              decoding="async"
+              onError={(e) => {
+                e.currentTarget.src = "/api/placeholder/300/400";
+              }}
+            />
+          </div>
         ))}
       </div>
 
