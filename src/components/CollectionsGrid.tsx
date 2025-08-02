@@ -16,6 +16,7 @@ const fetchCollections = async (): Promise<Collection[]> => {
     price: Number(item.price),
     description: item.description || '',
     images: item.images || [],
+    videos: item.videos || [],
     status: item.status === 'available' ? 'Available' : 'Sold Out',
     category: item.category
   }));

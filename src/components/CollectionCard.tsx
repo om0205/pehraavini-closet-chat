@@ -13,6 +13,7 @@ export interface Collection {
   price: number;
   description: string;
   images: string[];
+  videos?: string[];
   status: "Available" | "Sold Out";
   category?: string;
 }

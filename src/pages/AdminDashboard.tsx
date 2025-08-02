@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, LogOut, Eye, Edit, Trash2, Package, TrendingUp, Users, MessageCircle } from "lucide-react";
 import { Collection } from "@/components/CollectionCard";
 import { AddCollectionModal } from "@/components/admin/AddCollectionModal";
+import { EditCollectionModal } from "@/components/admin/EditCollectionModal";
 import { InvitationManagement } from "@/components/admin/InvitationManagement";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ const fetchCollections = async (): Promise<Collection[]> => {
     price: Number(item.price),
     description: item.description || '',
     images: item.images || [],
+    videos: item.videos || [],
     status: item.status === 'available' ? 'Available' : 'Sold Out',
     category: item.category
   }));
@@ -33,6 +35,8 @@ const fetchCollections = async (): Promise<Collection[]> => {
 
 export const AdminDashboard = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -154,6 +158,17 @@ export const AdminDashboard = () => {
       console.error('Error updating status:', error);
       toast.error("Failed to update status");
     }
+  };
+
+  const handleEditCollection = (collection: Collection) => {
+    setSelectedCollection(collection);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateCollection = (updatedCollection: Collection) => {
+    // Refresh the collections
+    queryClient.invalidateQueries({ queryKey: ['admin-collections'] });
+    queryClient.invalidateQueries({ queryKey: ['collections'] });
   };
 
   const availableCount = collections.filter(c => c.status === "Available").length;
@@ -301,6 +316,15 @@ export const AdminDashboard = () => {
                       <Button 
                         variant="outline" 
                         size="sm"
+                        onClick={() => handleEditCollection(collection)}
+                      >
+                        <Edit className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
                         onClick={() => toggleStatus(collection.id)}
                       >
                         {collection.status === "Available" ? "Mark Sold Out" : "Mark Available"}
@@ -327,6 +351,13 @@ export const AdminDashboard = () => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleAddCollection}
+      />
+
+      <EditCollectionModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onUpdate={handleUpdateCollection}
+        collection={selectedCollection}
       />
     </div>
   );
