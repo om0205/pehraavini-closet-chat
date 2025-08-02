@@ -132,6 +132,16 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
     const videos = media.filter(item => item.type === 'video').map(item => item.url);
 
     try {
+      console.log('Updating collection with data:', {
+        name: formData.name,
+        price: parseFloat(formData.price),
+        description: formData.description,
+        category: formData.category,
+        status: formData.status === 'Available' ? 'available' : 'sold-out',
+        images,
+        videos
+      });
+
       const { error } = await supabase
         .from('clothing_sets')
         .update({
@@ -145,7 +155,10 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
         })
         .eq('id', collection.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error details:', error);
+        throw error;
+      }
 
       const updatedCollection: Collection = {
         ...collection,
@@ -161,9 +174,9 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
       onUpdate(updatedCollection);
       toast.success("Collection updated successfully!");
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating collection:', error);
-      toast.error("Failed to update collection");
+      toast.error(`Failed to update collection: ${error.message || 'Unknown error'}`);
     }
   };
 
@@ -222,11 +235,12 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Saree">Saree</SelectItem>
-                  <SelectItem value="Kurti">Kurti</SelectItem>
-                  <SelectItem value="Lehenga">Lehenga</SelectItem>
-                  <SelectItem value="Suit">Suit</SelectItem>
-                  <SelectItem value="Accessories">Accessories</SelectItem>
+                  <SelectItem value="Bridal">Bridal</SelectItem>
+                  <SelectItem value="Festive">Festive</SelectItem>
+                  <SelectItem value="Party Wear">Party Wear</SelectItem>
+                  <SelectItem value="Designer">Designer</SelectItem>
+                  <SelectItem value="Traditional">Traditional</SelectItem>
+                  <SelectItem value="Contemporary">Contemporary</SelectItem>
                 </SelectContent>
               </Select>
             </div>
