@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { X, Upload, GripVertical, Image, Video } from "lucide-react";
+import { X, Upload, GripVertical, Image, Video, Crop } from "lucide-react";
 import { Collection } from "@/components/CollectionCard";
+import { ImageCropper } from "./ImageCropper";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -34,6 +35,9 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
   });
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [cropImageUrl, setCropImageUrl] = useState<string>("");
+  const [cropImageIndex, setCropImageIndex] = useState<number>(-1);
 
   useEffect(() => {
     if (collection) {
@@ -107,6 +111,51 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
       toast.error("Upload failed");
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const openCropper = (imageUrl: string, index: number) => {
+    setCropImageUrl(imageUrl);
+    setCropImageIndex(index);
+    setIsCropperOpen(true);
+  };
+
+  const handleCroppedImage = async (croppedBlob: Blob) => {
+    if (cropImageIndex === -1) return;
+
+    setIsUploading(true);
+    try {
+      const fileExt = 'jpg';
+      const fileName = `${Date.now()}-cropped.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('clothing-images')
+        .upload(filePath, croppedBlob);
+
+      if (error) {
+        toast.error("Failed to upload cropped image");
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('clothing-images')
+        .getPublicUrl(filePath);
+
+      // Replace the image at the specific index
+      setMedia(prev => prev.map((item, index) => 
+        index === cropImageIndex && item.type === 'image'
+          ? { ...item, url: publicUrl }
+          : item
+      ));
+
+      toast.success("Image cropped and updated successfully");
+    } catch (error) {
+      toast.error("Failed to process cropped image");
+    } finally {
+      setIsUploading(false);
+      setIsCropperOpen(false);
+      setCropImageIndex(-1);
     }
   };
 
@@ -310,7 +359,19 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
                     </Badge>
                   </div>
                   
-                  <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                    {item.type === 'image' && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => openCropper(item.url, index)}
+                        title="Crop image"
+                      >
+                        <Crop className="h-3 w-3" />
+                      </Button>
+                    )}
                     <Button
                       type="button"
                       variant="destructive"
@@ -353,6 +414,14 @@ export const EditCollectionModal = ({ isOpen, onClose, onUpdate, collection }: E
             </Button>
           </div>
         </form>
+
+        <ImageCropper
+          isOpen={isCropperOpen}
+          onClose={() => setIsCropperOpen(false)}
+          imageUrl={cropImageUrl}
+          onCrop={handleCroppedImage}
+          aspectRatio={3/4}
+        />
       </DialogContent>
     </Dialog>
   );

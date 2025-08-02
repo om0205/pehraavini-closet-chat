@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Eye } from "lucide-react";
 import { CollectionModal } from "./CollectionModal";
-import { ImageCarousel } from "./ui/image-carousel";
+import { MediaCarousel } from "./ui/media-carousel";
 
 export interface Collection {
   id: string;
@@ -39,8 +39,9 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
         <CardHeader className="p-0 relative overflow-hidden">
           {/* Image Carousel Container */}
           <div className="relative">
-            <ImageCarousel 
+            <MediaCarousel 
               images={collection.images} 
+              videos={collection.videos}
               name={collection.name}
             />
             
