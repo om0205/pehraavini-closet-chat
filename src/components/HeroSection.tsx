@@ -39,22 +39,11 @@ export const HeroSection = () => {
           {/* Logo */}
           <div className="mb-8 flex justify-center">
             <img 
-              src={`${import.meta.env.BASE_URL}lovable-uploads/dc2e0a2b-83de-45b1-a731-8555e88e20f0.png`}
+              src="/lovable-uploads/e89ed588-6269-4999-9e61-d607177eee97.png"
               alt="Pehraavini Logo" 
-              className="h-32 w-auto drop-shadow-lg"
+              className="h-64 md:h-80 w-auto drop-shadow-lg max-w-full"
             />
           </div>
-
-          {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              Pehraavini
-            </span>
-            <br />
-            <span className="text-foreground text-4xl md:text-5xl">
-              Where attire becomes an emotion!
-            </span>
-          </h1>
 
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
