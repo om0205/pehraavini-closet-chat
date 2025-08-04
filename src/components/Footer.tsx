@@ -28,12 +28,6 @@ export const Footer = () => {
               <a href="#collections" className="block text-muted-foreground hover:text-primary transition-colors">
                 Collections
               </a>
-              <a href="#about" className="block text-muted-foreground hover:text-primary transition-colors">
-                About Us
-              </a>
-              <a href="#contact" className="block text-muted-foreground hover:text-primary transition-colors">
-                Contact
-              </a>
               <a href="/admin" className="block text-muted-foreground hover:text-primary transition-colors">
                 Admin Panel
               </a>

@@ -23,7 +23,7 @@ export const Header = () => {
             alt="Pehraavini" 
             className="h-10 w-auto"
           />
-          <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          <span className="text-2xl font-bold font-prognostic bg-gradient-primary bg-clip-text text-transparent">
             Pehraavini
           </span>
         </div>
