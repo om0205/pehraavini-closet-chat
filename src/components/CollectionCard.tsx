@@ -78,7 +78,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
 
         <CardContent className="p-6">
           <div className="space-y-3">
-            <h3 className="font-bold text-lg text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="font-laila-semibold text-lg text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">
               {collection.name}
             </h3>
             
@@ -86,7 +86,7 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
               ₹{collection.price.toLocaleString()}
             </p>
             
-            <p className="text-muted-foreground text-sm line-clamp-3 leading-relaxed">
+            <p className="font-laila-light text-muted-foreground text-sm line-clamp-3 leading-relaxed">
               {collection.description}
             </p>
           </div>

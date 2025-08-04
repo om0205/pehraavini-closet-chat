@@ -20,6 +20,8 @@ export default {
 		extend: {
 			fontFamily: {
 				'prognostic': ['Prognostic', 'serif'],
+				'laila-semibold': ['Laila-SemiBold', 'sans-serif'],
+				'laila-light': ['Laila-Light', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
