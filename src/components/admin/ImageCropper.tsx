@@ -24,13 +24,14 @@ export const ImageCropper = ({ isOpen, onClose, imageUrl, onCrop, aspectRatio = 
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleCrop = useCallback(async () => {
-    if (!canvasRef.current || !imageRef.current) return;
+    if (!canvasRef.current || !imageRef.current || !containerRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const img = imageRef.current;
+    const container = containerRef.current;
     
     // Set canvas size to match aspect ratio
     const cropWidth = 400;
@@ -41,20 +42,38 @@ export const ImageCropper = ({ isOpen, onClose, imageUrl, onCrop, aspectRatio = 
 
     ctx.clearRect(0, 0, cropWidth, cropHeight);
 
-    // Save the context state
-    ctx.save();
+    // Calculate the visible area dimensions
+    const containerRect = container.getBoundingClientRect();
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
 
-    // Move to center of crop area
-    ctx.translate(cropWidth / 2, cropHeight / 2);
+    // Create a temporary canvas to render the transformed image first
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d');
+    if (!tempCtx) return;
+
+    // Set temp canvas size to container size for accurate cropping
+    tempCanvas.width = containerWidth;
+    tempCanvas.height = containerHeight;
+
+    // Clear temp canvas
+    tempCtx.clearRect(0, 0, containerWidth, containerHeight);
+
+    // Save temp context state
+    tempCtx.save();
+
+    // Move to center of container
+    tempCtx.translate(containerWidth / 2, containerHeight / 2);
     
     // Apply rotation
-    ctx.rotate((rotation * Math.PI) / 180);
+    tempCtx.rotate((rotation * Math.PI) / 180);
     
     // Apply scale and position
     const scaledWidth = img.naturalWidth * scale;
     const scaledHeight = img.naturalHeight * scale;
     
-    ctx.drawImage(
+    // Draw the image with transformations to temp canvas
+    tempCtx.drawImage(
       img,
       -scaledWidth / 2 + position.x,
       -scaledHeight / 2 + position.y,
@@ -62,8 +81,15 @@ export const ImageCropper = ({ isOpen, onClose, imageUrl, onCrop, aspectRatio = 
       scaledHeight
     );
 
-    // Restore the context state
-    ctx.restore();
+    // Restore temp context state
+    tempCtx.restore();
+
+    // Now crop from the temp canvas to the final canvas
+    ctx.drawImage(
+      tempCanvas,
+      0, 0, containerWidth, containerHeight,  // Source area (entire temp canvas)
+      0, 0, cropWidth, cropHeight            // Destination area (final canvas)
+    );
 
     // Convert canvas to blob
     canvas.toBlob((blob) => {
