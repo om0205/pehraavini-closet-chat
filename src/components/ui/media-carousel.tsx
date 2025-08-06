@@ -71,15 +71,29 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Don't handle swipe if touching video controls
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('video')) {
+      return;
+    }
     touchStartX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (!touchStartX.current) return;
     touchEndX.current = e.touches[0].clientX;
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (!touchStartX.current || !touchEndX.current) return;
+    
+    // Don't handle swipe if touching video controls
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('video')) {
+      touchStartX.current = 0;
+      touchEndX.current = 0;
+      return;
+    }
     
     const distance = touchStartX.current - touchEndX.current;
     const isLeftSwipe = distance > 50;
@@ -95,6 +109,9 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
       setCurrentIndex((prev) => (prev === 0 ? mediaItems.length - 1 : prev - 1));
       setIsPlaying(false);
     }
+    
+    touchStartX.current = 0;
+    touchEndX.current = 0;
   };
 
   return (
