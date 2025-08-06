@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Button } from "./button";
 
 interface MediaItem {
@@ -17,7 +17,6 @@ interface MediaCarouselProps {
 export const MediaCarousel = ({ images, videos = [], name, className = "" }: MediaCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -62,13 +61,6 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
     }
   };
 
-  const toggleMute = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
-    }
-  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     // Don't handle swipe if touching video controls
@@ -149,7 +141,7 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
                   ref={index === currentIndex ? videoRef : null}
                   src={media.url}
                   className="w-full h-full object-cover"
-                  muted={isMuted}
+                  muted
                   loop
                   playsInline
                   onPlay={() => setIsPlaying(true)}
@@ -157,29 +149,17 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
                 />
                 
                 {/* Video Controls */}
-                {index === currentIndex && (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                {index === currentIndex && !isPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                     <Button
                       variant="secondary"
                       size="icon"
                       className="opacity-70 hover:opacity-100 transition-opacity"
                       onClick={togglePlayPause}
                     >
-                      {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+                      <Play className="h-6 w-6" />
                     </Button>
                   </div>
-                )}
-
-                {/* Mute Button */}
-                {index === currentIndex && (
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute bottom-2 left-2 opacity-70 hover:opacity-100 transition-opacity w-8 h-8"
-                    onClick={toggleMute}
-                  >
-                    {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                  </Button>
                 )}
               </div>
             )}
