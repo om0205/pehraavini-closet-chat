@@ -117,9 +117,11 @@ export const MediaCarousel = ({ images, videos = [], name, className = "" }: Med
               <img
                 src={media.url}
                 alt={`${name} - Image ${index + 1}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading={index === 0 ? "eager" : "lazy"}
                 decoding="async"
+                fetchPriority={index === 0 ? "high" : "low"}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 onError={(e) => {
                   e.currentTarget.src = "/api/placeholder/300/400";
                 }}

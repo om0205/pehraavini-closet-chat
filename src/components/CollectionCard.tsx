@@ -1,11 +1,12 @@
 
-import { useState } from "react";
+import { useState, memo, lazy, Suspense } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Eye } from "lucide-react";
-import { CollectionModal } from "./CollectionModal";
 import { MediaCarousel } from "./ui/media-carousel";
+
+const CollectionModal = lazy(() => import("./CollectionModal").then(m => ({ default: m.CollectionModal })));
 
 export interface Collection {
   id: string;
@@ -22,7 +23,7 @@ interface CollectionCardProps {
   collection: Collection;
 }
 
-export const CollectionCard = ({ collection }: CollectionCardProps) => {
+const CollectionCardComponent = ({ collection }: CollectionCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleWhatsAppInquiry = () => {
@@ -116,12 +117,18 @@ export const CollectionCard = ({ collection }: CollectionCardProps) => {
         </CardFooter>
       </Card>
 
-      <CollectionModal
-        collection={collection}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onWhatsAppInquiry={handleWhatsAppInquiry}
-      />
+      {isModalOpen && (
+        <Suspense fallback={null}>
+          <CollectionModal
+            collection={collection}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onWhatsAppInquiry={handleWhatsAppInquiry}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
+
+export const CollectionCard = memo(CollectionCardComponent);

@@ -9,6 +9,7 @@ import { Collection } from "@/components/CollectionCard";
 import { AddCollectionModal } from "@/components/admin/AddCollectionModal";
 import { EditCollectionModal } from "@/components/admin/EditCollectionModal";
 import { InvitationManagement } from "@/components/admin/InvitationManagement";
+import { VisitorStats } from "@/components/admin/VisitorStats";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -249,6 +250,9 @@ export const AdminDashboard = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Website Analytics */}
+        <VisitorStats />
 
         {/* Admin Invitations */}
         <InvitationManagement />

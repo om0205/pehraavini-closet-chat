@@ -1,6 +1,7 @@
 import { CollectionCard, Collection } from "./CollectionCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 const fetchCollections = async (): Promise<Collection[]> => {
   const { data, error } = await supabase
@@ -26,7 +27,11 @@ export const CollectionsGrid = () => {
   const { data: collections = [], isLoading, error } = useQuery({
     queryKey: ['collections'],
     queryFn: fetchCollections,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Memoize collections to prevent unnecessary re-renders
+  const memoizedCollections = useMemo(() => collections, [collections]);
 
   if (error) {
     return (
@@ -69,7 +74,7 @@ export const CollectionsGrid = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {collections.map((collection) => (
+            {memoizedCollections.map((collection) => (
               <CollectionCard key={collection.id} collection={collection} />
             ))}
           </div>
