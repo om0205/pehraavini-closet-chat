@@ -13,13 +13,14 @@ export const useVisitorTracking = () => {
           sessionStorage.setItem('visitor_session', sessionId);
         }
 
-        // Track the visit
+        // Track the visit with minimal privacy-respecting data
         await supabase
           .from('visitor_logs')
           .insert({
             page_path: window.location.pathname,
             session_id: sessionId,
-            user_agent: navigator.userAgent,
+            // Only track basic browser info, not full user agent
+            user_agent: navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop',
           });
       } catch (error) {
         // Silently fail to not disrupt user experience
